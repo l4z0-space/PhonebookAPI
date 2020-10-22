@@ -1,0 +1,27 @@
+{
+  "name": "phonebookapi",
+  "version": "1.0.0",
+  "description": "phonebook server",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/l4z0-space/PhonebookAPI.git"
+  },
+  "author": "l4z0-space",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/l4z0-space/PhonebookAPI/issues"
+  },
+  "homepage": "https://github.com/l4z0-space/PhonebookAPI#readme",
+  "dependencies": {
+    "express": "^4.17.1"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.6"
+  }
+}
