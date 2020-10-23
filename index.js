@@ -1,10 +1,16 @@
 const { response, request } = require('express')
 const express = require('express')
+const morgan = require('morgan')
 const app = express()
 
 app.use(express.json())
 
+// Create the new token to log
+morgan.token('body', (req, res) => {
+    return JSON.stringify(req.body)
+})
 
+app.use(morgan(':method :status :url :body'))
 
 persons= [
     {
@@ -45,7 +51,6 @@ app.get('/api/persons/:id', (request, response) => {
         response.status(404).end()
     }
     else {
-        console.log(person);
         response.json(person)
     }
 })
@@ -69,7 +74,6 @@ app.delete('/api/persons/:id', (request, response) => {
 
 app.post('/api/persons', (request, response) => {
     const body = request.body
-    console.log(body.name)
     if(!body.name || !body.number){
         response.status(400).json({
             error: "Name or number are missing"
@@ -80,7 +84,8 @@ app.post('/api/persons', (request, response) => {
     if ( persons.includes( persons.find(person => person.name == body.name))){
         response.status(400).json({
             error: "Cannot contain duplicate names."
-            })
+            }
+        )
     }
 
     const person = {
@@ -88,9 +93,11 @@ app.post('/api/persons', (request, response) => {
         number: body.number,
         id: generateID()
     }
-    console.log(persons)
     response.json(person)
 })
+
+
+// app.use(unknownEndpoint)
 
 const PORT = 3001
 app.listen(PORT, () => {
