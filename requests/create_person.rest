@@ -1,7 +1,7 @@
-POST http://localhost:3001/api/pedrsons
+POST http://localhost:3001/api/persons
 Content-Type: application/json
 
 {
-    "name": "Filan Fisteku",
+    "name": "Fildan Fisteku",
     "number": "00"
 }
