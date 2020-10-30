@@ -1,12 +1,16 @@
+require('dotenv').config()
 const { response, request } = require('express')
 const express = require('express')
 const morgan = require('morgan')
 var cors = require('cors')
-const app = express()
-app.use(express.static('build'))
 
+const app = express()
+
+app.use(express.static('build'))
 app.use(cors())
 app.use(express.json())
+
+const Contact = require('./models/contact')
 
 // Create the new token to log
 morgan.token('body', (req, res) => {
@@ -15,51 +19,26 @@ morgan.token('body', (req, res) => {
 
 app.use(morgan(':method :status :url :body'))
 
-persons= [
-    {
-    "name": "Arto Hellas",
-    "number": "031-313412-12",
-    "id": 1
-    },
-    {
-    "name": "Ada Lovelace",
-    "number": "39-44-5323523",
-    "id": 2
-    },
-    {
-    "name": "Mary Poppendieck",
-    "number": "39-23-6423122",
-    "id": 4
-    },
-    {
-    "name": "Lazaron Shyta",
-    "number": "00355-696703885",
-    "id": 5
-    }
-]
-
-const generateID = () => {
-    return Math.floor(Math.random() * 15000)
-}
-
-app.get('/api/persons', (request, response) => {
-    response.json(persons)
+app.get('/api/persons', (request, response, next) => {
+    Contact.find({})
+        .then(allContacts => {
+            response.json(allContacts)
+        })
+        .catch(error => next(error))
 })
   
-app.get('/api/persons/:id', (request, response) => {
-    const id = Number(request.params.id)
-    const person = persons.find(person => person.id === id)
-    
-    if(!person){
-        response.status(404).end()
-    }
-    else {
-        response.json(person)
-    }
+
+app.get('/api/persons/:id', (request, response, next) => {
+    Contact.findById(request.params.id)
+        .then(contact => {
+            response.json(contact)
+        })
+        .catch(error => next(error))
 })
 
+
 app.get('/info', (request, response) => {
-    const numOfPeople = persons.length
+    const numOfPeople = 3
     const message = `Phonebook has info for ${numOfPeople} people`
     const date = new Date()
     
@@ -69,38 +48,65 @@ app.get('/info', (request, response) => {
     response.json(toSend)
 })
 
-app.delete('/api/persons/:id', (request, response) => {
-    const id = request.params.id
-    persons = persons.filter(person => person.id !== id)
-    response.status(204).end()
+app.delete('/api/persons/:id', (request, response, next) => {
+    Contact.findByIdAndRemove(request.params.id)
+        .then(result => {
+            response.status(204).end()
+        })
+        .catch(error => next(error))
 })
 
-app.post('/api/persons', (request, response) => {
+
+app.post('/api/persons', (request, response, next) => {
     const body = request.body
-    if(!body.name || !body.number){
+    const name = body.name
+    if(!name || !body.number){
         response.status(400).json({
             error: "Name or number are missing"
         })
     }
-
-    // Check if name entered has a duplicate
-    if ( persons.includes( persons.find(person => person.name == body.name))){
-        response.status(400).json({
-            error: "Cannot contain duplicate names."
-            }
-        )
-    }
-
-    const person = {
+    const contact = Contact({
         name: body.name,
         number: body.number,
-        id: generateID()
-    }
-    response.json(person)
+    })
+    contact.save()
+    .then(savedContact => {
+        console.log(savedContact.name, 'saved');
+        response.json(savedContact)
+    })
+    .catch(error => next(error))
 })
 
 
-// app.use(unknownEndpoint)
+const errorHandler = (error, request, response, next) => {
+    console.log('Calling error handler');
+    if (error.name == 'CastError'){
+        return response.status(500).send({error:'malformated id'})
+    }
+    else {
+        response.status(500).end()
+    }
+    next(error)
+}
+app.use(errorHandler)
+
+
+app.put('/api/persons/:id', (request, response) => {
+    const name = request.body.name
+    const number = request.body.number
+
+    const contact = {
+        name: name,
+        number: number
+    }
+
+    Contact.findByIdAndUpdate(request.params.id, contact, {new: true})
+        .then(updatedContact => {
+            console.log(updatedContact)
+            response.json(updatedContact)
+        })
+})
+
 
 const PORT = process.env.PORT || 3001
 app.listen(PORT, () => {

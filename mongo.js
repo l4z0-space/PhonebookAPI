@@ -8,7 +8,7 @@ if (process.argv.length < 3 ){
 
 const password = process.argv[2]
 const url =
-  `mongodb+srv://fullstack:${password}@fullstack.rso5f.mongodb.net/contactDB?retryWrites=true&w=majority`
+  `mongodb+srv://fullstack:Lazajola12@fullstack.rso5f.mongodb.net/contactDB?retryWrites=true&w=majority`
 
 mongoose.connect(url, { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false, useCreateIndex: true })
 
@@ -24,12 +24,14 @@ if ( process.argv.length === 3 ){
     
     console.log('Phonebook: ')
 
-    Contact.find({}).then(cont => {
-        allNames = cont.map(con => con.name)
-        allNames.forEach(person => {
-            console.log(person);
-        })
-        mongoose.connection.close()
+    Contact
+        .find({})
+        .then(cont => {
+            allNames = cont.map(con => con.name)
+            allNames.forEach(name => {
+                console.log(name);
+            })
+            mongoose.connection.close()
     })
 }
 
