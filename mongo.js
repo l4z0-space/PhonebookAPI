@@ -8,9 +8,15 @@ if (process.argv.length < 3 ){
 
 const password = process.argv[2]
 const url =
-  `mongodb+srv://fullstack:${password}2@fullstack.rso5f.mongodb.net/contactDB?retryWrites=true&w=majority`
+  `mongodb+srv://fullstack:${password}@fullstack.rso5f.mongodb.net/contactDB?retryWrites=true&w=majority`
 
 mongoose.connect(url, { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false, useCreateIndex: true })
+  .then(res => {
+    console.log('Connected!');
+  })
+  .catch(error => {
+    console.log('Error');
+  })
 
 const contactSchema = new mongoose.Schema({
   name: String,
