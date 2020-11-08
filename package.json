@@ -1,0 +1,39 @@
+{
+  "name": "phonebookapi",
+  "version": "1.0.0",
+  "description": "phonebook server",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js",
+    "lint": "eslint .",
+    "test": "jest --verbose"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/l4z0-space/PhonebookAPI.git"
+  },
+  "author": "l4z0-space",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/l4z0-space/PhonebookAPI/issues"
+  },
+  "homepage": "https://github.com/l4z0-space/PhonebookAPI#readme",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "mongoose": "^5.10.11",
+    "mongoose-unique-validator": "^2.0.3",
+    "morgan": "^1.10.0"
+  },
+  "devDependencies": {
+    "eslint": "^7.12.1",
+    "eslint-plugin-react": "^7.21.5",
+    "jest": "^26.6.3",
+    "nodemon": "^2.0.6"
+  },
+  "jest": {
+    "testEnvironment": "node"
+  }
+}
